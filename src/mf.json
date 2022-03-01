@@ -1,0 +1,37 @@
+{
+  "table": {
+    "columnName": "Value"
+  },
+  "customerDetails": {
+    "id": "Unique_id",
+    "name": "Customer_Name",
+    "username": "Username",
+    "password": "Password",
+    "mobileNumber": "9876543210",
+    "emailId": "abc@xyz.com",
+    "createdOn": "DD/MM/YYYY : HH:MM:SS",
+    "active": true
+  },
+  "investments": {
+    "id": "Unique_id",
+    "cid": "customer_details.id",
+    "investmentType": "SIP/Lumsum",
+    "mutualFund": "KOTAK/SBI/UTI/AXIS",
+    "schemeName": "ABC Fund",
+    "investedWith": "Cheque/RTGS/Online",
+    "investedValue": "0000.00",
+    "currentValue": "0000.00",
+    "sipDate": "DD",
+    "investedOn": "DD/MM/YYYY : HH:MM:SS",
+    "active": true
+  },
+  "employees": {
+    "employeeId": "employeeId",
+    "name": "customerName",
+    "mobileNumber": "9876543210",
+    "emailId": "abc@xyz.com",
+    "photo": "../photo.png",
+    "joinedOn": "DD/MM/YYYY : HH:MM:SS",
+    "active": true
+  }
+}
