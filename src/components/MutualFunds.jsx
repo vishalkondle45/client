@@ -21,6 +21,7 @@ import {
   ModalFooter,
   useDisclosure,
   Stack,
+  Box,
 } from "@chakra-ui/react";
 import { FaCalendarDay, FaRupeeSign, FaSave } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
@@ -61,7 +62,7 @@ const MutualFunds = () => {
   const [mode, setMode] = useState("1");
 
   return (
-    <div style={{ overflowY: "auto", margin: "10px" }}>
+    <Box m={2} overflowY={"auto"}>
       <InputGroup>
         <InputLeftAddon children="Search" />
         <Input placeholder="Search" />
@@ -189,7 +190,7 @@ const MutualFunds = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+    </Box>
   );
 };
 

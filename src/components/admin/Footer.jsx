@@ -35,33 +35,40 @@ const SocialButton = ({ children, label, href }) => {
 
 export default function Footer() {
   return (
-    <Box
-      bg={useColorModeValue("gray.50", "gray.900")}
-      color={useColorModeValue("gray.700", "gray.200")}
-      sx={{ position: "fixed", left: 0, bottom: 0, width: "100%" }}
-    >
-      <Container
-        as={Stack}
-        maxW={"6xl"}
-        py={4}
-        direction={{ base: "column", md: "row" }}
-        spacing={4}
-        justify={{ base: "center", md: "space-between" }}
-        align={{ base: "center", md: "center" }}
+    <div style={{ marginTop: "60px" }}>
+      <Box
+        bg={useColorModeValue("gray.50", "gray.900")}
+        color={useColorModeValue("gray.700", "gray.200")}
+        sx={{
+          position: "fixed",
+          left: 0,
+          bottom: 0,
+          width: "100%",
+        }}
       >
-        <Text>© 2022 Varun Online Services. All rights reserved</Text>
-        <Stack direction={"row"} spacing={6}>
-          <SocialButton label={"Twitter"} href={"#"}>
-            <FaTwitter color="DodgerBlue" />
-          </SocialButton>
-          <SocialButton label={"YouTube"} href={"#"}>
-            <FaYoutube color="red" />
-          </SocialButton>
-          <SocialButton label={"Instagram"} href={"#"}>
-            <FaInstagram color="purple" />
-          </SocialButton>
-        </Stack>
-      </Container>
-    </Box>
+        <Container
+          as={Stack}
+          maxW={"6xl"}
+          py={4}
+          direction={{ base: "column", md: "row" }}
+          spacing={4}
+          justify={{ base: "center", md: "space-between" }}
+          align={{ base: "center", md: "center" }}
+        >
+          <Text>© 2022 Varun Online Services</Text>
+          {/* <Stack direction={"row"} spacing={6}>
+            <SocialButton label={"Twitter"} href={"#"}>
+              <FaTwitter color="DodgerBlue" />
+            </SocialButton>
+            <SocialButton label={"YouTube"} href={"#"}>
+              <FaYoutube color="red" />
+            </SocialButton>
+            <SocialButton label={"Instagram"} href={"#"}>
+              <FaInstagram color="purple" />
+            </SocialButton>
+          </Stack> */}
+        </Container>
+      </Box>
+    </div>
   );
 }

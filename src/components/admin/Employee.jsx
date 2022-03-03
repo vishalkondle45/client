@@ -16,12 +16,13 @@ export default function Employee({ name, mobile, email, role }) {
   return (
     <Center py={6}>
       <Box
-        maxW={"320px"}
+        maxW={"330px"}
         w={"full"}
         bg={useColorModeValue("white", "gray.800")}
         boxShadow={"2xl"}
         rounded={"md"}
         overflow={"hidden"}
+        fontSize={"14px"}
       >
         <Image
           h={"120px"}

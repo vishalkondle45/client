@@ -14,8 +14,8 @@ import { useState } from "react";
 // import "react-datetime/css/react-datetime.css";
 // import Working from "./Working";
 const App = () => {
-  const [adminLoggedIn, setAdminLoggedIn] = useState(0);
-  const [userLoggedIn, setUserLoggedIn] = useState(1);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(1);
+  const [userLoggedIn, setUserLoggedIn] = useState(0);
   return (
     <>
       <Router>
