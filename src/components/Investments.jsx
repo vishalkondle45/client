@@ -1,7 +1,7 @@
 import React from "react";
 
 const Investments = () => {
-  return <div>Investments</div>;
+  return <div style={{ marginTop: "100px" }}>Investments</div>;
 };
 
 export default Investments;

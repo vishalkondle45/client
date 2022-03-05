@@ -11,10 +11,11 @@ import MyInvestments from "./components/Investments";
 import MutualFunds from "./components/admin/MutualFunds";
 import UserMutualFunds from "./components/MutualFunds";
 import { useState } from "react";
-// import "react-datetime/css/react-datetime.css";
-// import Working from "./Working";
+import Help from "./components/Help";
+import Dashboard from "./components/Dashboard";
+
 const App = () => {
-  const [adminLoggedIn, setAdminLoggedIn] = useState(1);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(0);
   const [userLoggedIn, setUserLoggedIn] = useState(0);
   return (
     <>
@@ -30,9 +31,11 @@ const App = () => {
         <Routes>
           {/* User Routes */}
           <Route path="/" exact element={<Home />} />
-          <Route path="about" exact element={<About />} />
-          <Route path="my_investements" exact element={<MyInvestments />} />
+          <Route path="dashboard" exact element={<Dashboard />} />
+          <Route path="my_investments" exact element={<MyInvestments />} />
           <Route path="mutual_funds" exact element={<UserMutualFunds />} />
+          <Route path="help" exact element={<Help />} />
+          <Route path="about" exact element={<About />} />
           {/* Admin Routes */}
           <Route path="admin" exact element={<h1>Home</h1>} />
           <Route path="admin/investors" element={<Investers />} />

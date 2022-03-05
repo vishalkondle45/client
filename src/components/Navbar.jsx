@@ -13,71 +13,48 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  InputGroup,
-  InputLeftAddon,
-  Input,
-  Checkbox,
 } from "@chakra-ui/react";
 import { NavLink as RouterLink } from "react-router-dom";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import UserLogin from "./UserLogin";
+import UserRegister from "./UserRegister";
+import axios from "axios";
 
-const Links = ["DashBoard", "My_Investements", "Mutual_Funds", "Help"];
+const Links = ["DashBoard", "My_Investments", "Mutual_Funds", "Help"];
 
 export default function Navbar({ userLoggedIn, setUserLoggedIn }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [showUserLogin, setShowUserLogin] = useState(false);
 
+  //! Modal Showing
+  //? Login Modal
+  const [showUserLogin, setShowUserLogin] = useState(false);
+  const [showUserRegister, setShowUserRegister] = useState(false);
+
+  //! Data
+  //? Login Details
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
     keepLoggedIn: true,
-    isGiven: {
-      username: true,
-      password: true,
-    },
   });
 
-  const handleInput = (e) => {
-    e.preventDefault();
-    const { name } = e.target;
-    const value = name === "keepLoggedIn" ? e.target.checked : e.target.value;
-    setLoginDetails({
-      ...loginDetails,
-      [name]: value,
-      isGiven: { ...loginDetails.isGiven, [name]: true },
-    });
-  };
-
+  //! Function
+  //? Login Function
   const login = () => {
-    setLoginDetails({
-      ...loginDetails,
-      isGiven: { username: true, password: true },
-    });
-    if (loginDetails.username.length === 0) {
-      setLoginDetails({
-        ...loginDetails,
-        isGiven: { ...loginDetails.isGiven, username: false },
-      });
-      return null;
-    }
-    if (loginDetails.password.length === 0) {
-      setLoginDetails({
-        ...loginDetails,
-        isGiven: { ...loginDetails.isGiven, password: false },
-      });
-      return null;
-    }
-    if (loginDetails.isGiven.username && loginDetails.isGiven.password) {
-      setUserLoggedIn(true);
-      setShowUserLogin(false);
+    if (loginDetails.username !== "" && loginDetails.password !== "") {
+      axios
+        .get("http://localhost:8000/api/getInvestors", loginDetails)
+        .then(function (response) {
+          // console.log(response);
+        })
+        .catch(function (error) {
+          // console.log(error);
+        })
+        .finally(() => {
+          setUserLoggedIn(true);
+          setShowUserLogin(false);
+        });
     }
   };
 
@@ -143,7 +120,15 @@ export default function Navbar({ userLoggedIn, setUserLoggedIn }) {
                     />
                   </MenuButton>
                 ) : (
-                  <Button onClick={() => setShowUserLogin(true)}>Login</Button>
+                  <>
+                    <Button onClick={() => setShowUserLogin(true)}>
+                      Login
+                    </Button>
+
+                    <Button onClick={() => setShowUserRegister(true)}>
+                      Register
+                    </Button>
+                  </>
                 )}
                 <MenuList>
                   <MenuItem>My Profile</MenuItem>
@@ -158,7 +143,11 @@ export default function Navbar({ userLoggedIn, setUserLoggedIn }) {
             <Box pb={4} display={{ md: "none" }}>
               <Stack as={"nav"} spacing={4}>
                 {Links.map((link) => (
-                  <RouterLink to={link.toLowerCase()} key={link}>
+                  <RouterLink
+                    to={link.toLowerCase()}
+                    onClick={onClose}
+                    key={link}
+                  >
                     {link}
                   </RouterLink>
                 ))}
@@ -166,87 +155,26 @@ export default function Navbar({ userLoggedIn, setUserLoggedIn }) {
             </Box>
           ) : null}
         </Box>
-        <Modal onClose={onClose} size="xl" isOpen={showUserLogin}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Login</ModalHeader>
-            <ModalCloseButton
-              onClick={() => {
-                setLoginDetails({
-                  username: "",
-                  password: "",
-                  keepLoggedIn: true,
-                  isGiven: {
-                    username: true,
-                    password: true,
-                  },
-                });
-                setShowUserLogin(false);
-              }}
-            />
-            <ModalBody>
-              <InputGroup>
-                <InputLeftAddon children={"username*".toUpperCase()} />
-                <Input
-                  type="text"
-                  placeholder="username"
-                  name="username"
-                  value={loginDetails.username}
-                  onChange={handleInput}
-                />
-              </InputGroup>
-              {loginDetails.isGiven.username ? null : (
-                <p style={{ color: "red" }}>Username Mandatory</p>
-              )}
-              <br />
-              <InputGroup>
-                <InputLeftAddon children={"password*".toUpperCase()} />
-                <Input
-                  type="text"
-                  placeholder="password"
-                  name={"password"}
-                  value={loginDetails.password}
-                  onChange={handleInput}
-                />
-              </InputGroup>
-              {loginDetails.isGiven.password ? null : (
-                <p style={{ color: "red" }}>Password Mandatory</p>
-              )}
-              <br />
-              <Checkbox
-                colorScheme="green"
-                isChecked={loginDetails.keepLoggedIn}
-                name={"keepLoggedIn"}
-                onChange={handleInput}
-              >
-                Keep me LoggedIn (Optional)
-              </Checkbox>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                onClick={() => {
-                  setLoginDetails({
-                    username: "",
-                    password: "",
-                    keepLoggedIn: true,
-                    isGiven: {
-                      username: true,
-                      password: true,
-                    },
-                  });
-                  setShowUserLogin(false);
-                }}
-                colorScheme={"red"}
-                sx={{ mr: "10px" }}
-              >
-                Cancel
-              </Button>
-              <Button colorScheme={"green"} onClick={login}>
-                Login
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+
+        {showUserLogin ? (
+          <UserLogin
+            login={login}
+            setUserLoggedIn={setUserLoggedIn}
+            onClose={onClose}
+            showUserLogin={showUserLogin}
+            setLoginDetails={setLoginDetails}
+            setShowUserLogin={setShowUserLogin}
+            loginDetails={loginDetails}
+          />
+        ) : null}
+
+        {showUserRegister ? (
+          <UserRegister
+            onClose={onClose}
+            showUserRegister={showUserRegister}
+            setShowUserRegister={setShowUserRegister}
+          />
+        ) : null}
       </div>
     </>
   );

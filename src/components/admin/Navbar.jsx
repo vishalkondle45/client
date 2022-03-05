@@ -89,7 +89,11 @@ export default function Navbar() {
             <Box pb={4} display={{ md: "none" }}>
               <Stack as={"nav"} spacing={4}>
                 {Links.map((link) => (
-                  <RouterLink to={link} key={link}>
+                  <RouterLink
+                    to={`admin/${link.toLowerCase()}`}
+                    onClick={onClose}
+                    key={link}
+                  >
                     {link}
                   </RouterLink>
                 ))}
