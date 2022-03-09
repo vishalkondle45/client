@@ -13,6 +13,7 @@ import UserMutualFunds from "./components/MutualFunds";
 import { useState } from "react";
 import Help from "./components/Help";
 import Dashboard from "./components/Dashboard";
+import NewInvestment from "./components/NewInvestment";
 
 const App = () => {
   const [adminLoggedIn, setAdminLoggedIn] = useState(0);
@@ -32,6 +33,7 @@ const App = () => {
           {/* User Routes */}
           <Route path="/" exact element={<Home />} />
           <Route path="dashboard" exact element={<Dashboard />} />
+          <Route path="new_investment" exact element={<NewInvestment />} />
           <Route path="my_investments" exact element={<MyInvestments />} />
           <Route path="mutual_funds" exact element={<UserMutualFunds />} />
           <Route path="help" exact element={<Help />} />

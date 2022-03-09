@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Thead,
@@ -11,74 +11,105 @@ import {
   Button,
   Center,
   Input,
-  InputLeftAddon,
-  InputGroup,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaEdit, FaSave } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
-// import investments from "../../investments";
+import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
+import axios from "axios";
+import AddFund from "./AddFund";
+import EditFund from "./EditFund";
+var Chance = require("chance");
+var chance = new Chance();
 
 const MutualFunds = () => {
-  const [funds, setFunds] = useState([
-    {
-      id: "01",
-      mutualFundName: "SBI",
-      schemeName: "Focused Equity",
-      nav: "123.45",
-      lastUpdated: Date(),
-    },
-    {
-      id: "02",
-      mutualFundName: "KOTAK",
-      schemeName: "Focused Equity",
-      nav: "987.65",
-      lastUpdated: Date(),
-    },
-  ]);
   const [fund, setFund] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const tableHeadings = Object.keys(funds[0]);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [funds, setFunds] = useState([
+    {
+      id: "",
+      fundName: "",
+      schemeName: "",
+      nav: "",
+      lastUpdated: "",
+    },
+  ]);
+  const getFunds = () => {
+    axios
+      .get("http://localhost:8000/api/getMutualFunds")
+      .then((res) => {
+        if (res.status === 200) {
+          setFunds(res.data);
+        }
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setFund({}));
+  };
+  useEffect(() => {
+    getFunds();
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFund({ ...fund, [name]: value });
   };
   const addFund = () => {
-    const id = parseInt(funds[funds.length - 1].id) + 1;
+    const id = chance.guid();
     setFund({
       id: id,
-      mutualFundName: "",
+      fundName: "",
       schemeName: "",
       nav: "",
       lastUpdated: Date(),
     });
     onOpen(fund);
   };
+  const closeEditOpen = () => {
+    setIsEditOpen(false);
+  };
+  const deleteFund = async (fund) => {
+    // console.log("Befor Axios");
+    await axios
+      .post("http://localhost:8000/api/deleteMutualFund", fund)
+      .then((res) => {
+        if (res.status === 200) getFunds();
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setFund({}));
+  };
   return (
     <div style={{ overflowY: "auto", margin: "10px" }}>
-      <InputGroup>
+      {/* <InputGroup>
         <InputLeftAddon children="Fund ID" />
         <Input placeholder="Search" />
-      </InputGroup>
-      <Button onClick={addFund}>Add</Button>
+      </InputGroup> */}
+      <Button
+        onClick={addFund}
+        colorScheme={"green"}
+        isFullWidth={true}
+        leftIcon={<FaPlusCircle />}
+      >
+        New Fund
+      </Button>
       <Table variant="striped" id="funds" size="sm">
         <TableCaption placement="top">Funds</TableCaption>
         <Thead>
           <Tr>
-            {tableHeadings.map((heading) => (
-              <Th key={heading}>
-                <Center>{heading}</Center>
-              </Th>
-            ))}
             <Th>
-              <Center>Edit</Center>
+              <Center>ID</Center>
+            </Th>
+            <Th>
+              <Center>Fund Name</Center>
+            </Th>
+            <Th>
+              <Center>Scheme Name</Center>
+            </Th>
+            <Th>
+              <Center>NAV VALUE</Center>
+            </Th>
+            <Th>
+              <Center>Last Updated</Center>
+            </Th>
+            <Th>
+              <Center>Actions</Center>
             </Th>
           </Tr>
         </Thead>
@@ -90,7 +121,7 @@ const MutualFunds = () => {
                   <Center>{fund.id}</Center>
                 </Td>
                 <Td>
-                  <Center>{fund.mutualFundName}</Center>
+                  <Center>{fund.fundName}</Center>
                 </Td>
                 <Td>
                   <Center>{fund.schemeName}</Center>
@@ -99,17 +130,27 @@ const MutualFunds = () => {
                   <Center>{fund.nav}</Center>
                 </Td>
                 <Td>
-                  <Center>{fund.lastUpdated}</Center>
+                  <Center>{fund.lastUpdated.slice(0, 25)}</Center>
                 </Td>
-                <Td>
+                <Td colSpan={"2"}>
                   <Center>
                     <Icon
                       onClick={() => {
                         setFund(fund);
-                        onOpen(fund);
+                        setIsEditOpen(true);
                       }}
                       color={"#000"}
                       as={FaEdit}
+                      sx={{ marginRight: "10px" }}
+                    />
+                    <Icon
+                      onClick={() => {
+                        setFund(fund);
+                        console.log(fund);
+                        deleteFund(fund);
+                      }}
+                      color={"#000"}
+                      as={FaTrash}
                     />
                   </Center>
                 </Td>
@@ -118,58 +159,26 @@ const MutualFunds = () => {
           })}
         </Tbody>
       </Table>
-      <Modal onClose={onClose} size="full" isOpen={isOpen}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{funds.mutualFundName}</ModalHeader>
-          <ModalCloseButton backgroundColor={"#e53e3e"} color={"white"} />
-          <ModalBody>
-            {Object.keys(fund).map((f, index) => {
-              return (
-                <div key={index}>
-                  <InputGroup>
-                    <InputLeftAddon children={f.toUpperCase()} />
-                    <Input
-                      type="tel"
-                      placeholder="phone number"
-                      name={f}
-                      disabled={
-                        f === "id" || f === "lastUpdated" ? true : false
-                      }
-                      value={fund[f]}
-                      onChange={handleChange}
-                    />
-                  </InputGroup>
-                  <br />
-                </div>
-              );
-            })}
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              onClick={onClose}
-              style={{ marginRight: "15px" }}
-              colorScheme={"red"}
-            >
-              <ImCross style={{ marginRight: "5px" }} /> Close
-            </Button>
-            <Button
-              onClick={() => {
-                const update = funds.filter((f) => f.id !== fund.id);
-                if (!fund.mutualFundName || !fund.schemeName || !fund.nav) {
-                  return null;
-                }
-                fund.lastUpdated = Date();
-                setFunds([...update, fund]);
-                onClose();
-              }}
-              colorScheme={"green"}
-            >
-              <FaSave style={{ marginRight: "5px" }} /> Save Changes
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {isOpen && (
+        <AddFund
+          onClose={onClose}
+          isOpen={isOpen}
+          funds={funds}
+          fund={fund}
+          handleChange={handleChange}
+          getFunds={getFunds}
+        />
+      )}
+      {isEditOpen && (
+        <EditFund
+          isEditOpen={isEditOpen}
+          closeEditOpen={closeEditOpen}
+          funds={funds}
+          fund={fund}
+          handleChange={handleChange}
+          getFunds={getFunds}
+        />
+      )}
     </div>
   );
 };

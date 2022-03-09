@@ -26,7 +26,6 @@ import axios from "axios";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import InputField from "../shared/InputField";
 import CheckboxField from "../shared/CheckboxField";
-import dateFormat from "dateformat";
 
 const Investors = () => {
   // Delete Alert Dialog
@@ -67,27 +66,15 @@ const Investors = () => {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editId, setEditId] = useState(0);
-  const [selected, setSelected] = useState({});
 
-  const getData = () => {
-    axios
+  const getData = async () => {
+    await axios
       .get("http://localhost:8000/api/getInvestors")
       .then((res) => {
-        if (res.status === 200) {
-          setInvestors(res.data);
-        }
+        if (res.status === 200) setInvestors(res.data);
       })
       .catch((error) => console.log(error))
       .finally(() => {});
-  };
-
-  const handleInput = (e) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    setSelected({
-      ...selected,
-      [name]: value,
-    });
   };
 
   const handleCheckbox = (e) => {
@@ -135,9 +122,7 @@ const Investors = () => {
         currentEdit
       )
       .then((res) => {
-        if (res.status === 200) {
-          getData();
-        }
+        if (res.status === 200) getData();
       })
       .catch((error) => console.log(error))
       .finally(() => {
@@ -150,9 +135,7 @@ const Investors = () => {
     await axios
       .delete(`http://localhost:8000/api/deleteInvestor/${id}`)
       .then((res) => {
-        if (res.status === 200) {
-          getData();
-        }
+        if (res.status === 200) getData();
       })
       .catch((error) => console.log(error))
       .finally(() => {
@@ -169,7 +152,7 @@ const Investors = () => {
         colorScheme="whatsapp"
         style={{
           border: "1px solid",
-          width: "2300px",
+          width: "3000px",
         }}
       >
         <Thead>
@@ -225,14 +208,7 @@ const Investors = () => {
                     );
                   }
                   if (col === "joinedOn") {
-                    return (
-                      <Td key={index}>
-                        {dateFormat(
-                          Date(investor[col]),
-                          "dd-mmm-yyyy hh:MM:ss"
-                        )}
-                      </Td>
-                    );
+                    return <Td key={index}>{investor[col].slice(0, 25)}</Td>;
                   }
                   return <Td key={index}>{investor[col]}</Td>;
                 })}
@@ -264,6 +240,7 @@ const Investors = () => {
                 return (
                   <InputField
                     key={index}
+                    readOnly={col === "id" ? true : false}
                     value={currentEdit[col]}
                     name={col}
                     handleInput={handleCurrentEdit}

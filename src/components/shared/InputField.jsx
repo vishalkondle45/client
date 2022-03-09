@@ -1,7 +1,13 @@
 import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
 import React from "react";
 
-const InputField = ({ value, handleInput, name, mandatory }) => {
+const InputField = ({
+  value,
+  handleInput,
+  name,
+  mandatory,
+  readOnly = "false",
+}) => {
   return (
     <div>
       <InputGroup size={"sm"} marginBottom={"10px"}>

@@ -60,7 +60,7 @@ export default function Navbar({ userLoggedIn, setUserLoggedIn }) {
 
   return (
     <>
-      <div style={{ marginBottom: "4%" }}>
+      <div style={{ marginBottom: "70px" }}>
         <Box
           bg={useColorModeValue("gray.100", "gray.900")}
           px={4}

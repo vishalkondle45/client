@@ -50,11 +50,9 @@ const Investments = () => {
   const [investment, setInvestment] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
   const tableHeadings = Object.keys(investments[0]);
-  // &console.log(tableData);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInvestment({ ...investment, [name]: value });
-    // &console.log(investment);
   };
   return (
     <div style={{ overflowY: "auto", margin: "10px" }}>
