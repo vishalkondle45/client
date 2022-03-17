@@ -15,6 +15,7 @@ import axios from "axios";
 import React from "react";
 import { FaSave } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
+import InputField from "../shared/InputField";
 
 const AddFund = ({ onClose, isOpen, funds, fund, handleChange, getFunds }) => {
   return (
@@ -27,16 +28,13 @@ const AddFund = ({ onClose, isOpen, funds, fund, handleChange, getFunds }) => {
           {Object.keys(fund).map((f, index) => {
             return (
               <div key={index}>
-                <InputGroup>
-                  <InputLeftAddon children={f.toUpperCase()} />
-                  <Input
-                    type="tel"
-                    name={f}
-                    disabled={f === "id" || f === "lastUpdated" ? true : false}
-                    value={fund[f]}
-                    onChange={handleChange}
-                  />
-                </InputGroup>
+                <InputField
+                  value={fund[f]}
+                  name={f}
+                  handleInput={handleChange}
+                  mandatory={true}
+                  readOnly={f === "id" || f === "lastUpdated" ? true : false}
+                />
                 <br />
               </div>
             );

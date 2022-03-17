@@ -10,7 +10,6 @@ import {
   Icon,
   Button,
   Center,
-  Input,
   useDisclosure,
 } from "@chakra-ui/react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
@@ -52,7 +51,7 @@ const MutualFunds = () => {
     setFund({ ...fund, [name]: value });
   };
   const addFund = () => {
-    const id = chance.guid();
+    const id = chance.integer({ min: 100000, max: 999999 });
     setFund({
       id: id,
       fundName: "",

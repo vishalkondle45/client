@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Thead,
@@ -26,52 +26,93 @@ import {
   useDisclosure,
   Switch,
 } from "@chakra-ui/react";
-import { FaEdit, FaSave } from "react-icons/fa";
+import { FaEdit, FaPlusCircle, FaSave } from "react-icons/fa";
+import axios from "axios";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+var Chance = require("chance");
+var chance = new Chance();
 // import investments from "../../investments";
-
-const investments = [
-  {
-    investment_id: "01",
-    investor_id: "01",
-    folio_no: "123132",
-    mutual_fund: "SBI",
-    scheme: "Magnum Fund",
-    type: "SIP",
-    cheque_rtgs: "543210",
-    amount: "50000",
-    current: "51222",
-    date_time: "01/03/2021",
-    remarks: "No Remark",
-    active: true,
-  },
-];
 
 const Investments = () => {
   const [investment, setInvestment] = useState({});
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [investments, setInvestments] = useState([
+    {
+      id: chance.integer({ min: 100000, max: 999999 }),
+      investorId: "",
+      mutualFundId: "",
+      investedAmount: 0,
+      navUnits: 0,
+      navValueAtPurchase: 0,
+      currentAmount: 0,
+      agentCode: "",
+      status: true,
+      investedOn: Date(),
+    },
+  ]);
+
   const tableHeadings = Object.keys(investments[0]);
+
+  const getInvestments = async () => {
+    await axios
+      .get("http://localhost:8000/api/getInvestments")
+      .then((res) => {
+        if (res.status === 200) {
+          setInvestments(res.data);
+        }
+      })
+      .catch((error) => console.log(error))
+      .finally(() => setInvestment({}));
+  };
+
+  useEffect(() => {
+    getInvestments();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInvestment({ ...investment, [name]: value });
   };
+  const newInvestment = () => {
+    setInvestment({
+      id: chance.integer({ min: 100000, max: 999999 }),
+      investorId: "",
+      mutualFundId: "",
+      investedAmount: 0,
+      navUnits: 0,
+      navValueAtPurchase: 0,
+      currentAmount: 0,
+      agentCode: "",
+      status: true,
+      investedOn: Date(),
+    });
+    onOpen(investment);
+  };
+
+  console.log("investments", investments);
   return (
     <div style={{ overflowY: "auto", margin: "10px" }}>
-      <InputGroup>
-        <InputLeftAddon children="Invester ID" />
-        <Input placeholder="Search" />
-      </InputGroup>
+      <Button
+        onClick={newInvestment}
+        colorScheme={"green"}
+        isFullWidth={true}
+        leftIcon={<FaPlusCircle />}
+      >
+        New Fund
+      </Button>
       <Table variant="striped" id="investments" size="sm">
         <TableCaption placement="top">Investments</TableCaption>
         <Thead>
           <Tr>
+            <Th colSpan={"2"}>
+              <Center>Actions</Center>
+            </Th>
             {tableHeadings.map((heading) => (
               <Th key={heading}>
                 <Center>{heading}</Center>
               </Th>
             ))}
-            <Th>
-              <Center>Edit</Center>
-            </Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -79,66 +120,27 @@ const Investments = () => {
             return (
               <Tr key={index}>
                 <Td>
-                  <Center>{investment.investment_id}</Center>
+                  <EditIcon
+                    onClick={() => {
+                      // edit(investor["id"])
+                    }}
+                  />
                 </Td>
                 <Td>
-                  <Center>{investment.investor_id}</Center>
+                  <DeleteIcon
+                    onClick={() => {
+                      // setDeleteId(investor["id"]);
+                      // setIsDeleteOpen(true);
+                    }}
+                  />
                 </Td>
-                <Td>
-                  <Center>{investment.folio_no}</Center>
-                </Td>
-                <Td>
-                  <Center>{investment.mutual_fund}</Center>
-                </Td>
-                <Td>
-                  <Center>{investment.scheme}</Center>
-                </Td>
-                <Td>
-                  <Center>{investment.type}</Center>
-                </Td>
-                <Td>
-                  <Center>{investment.cheque_rtgs}</Center>
-                </Td>
-                <Td>
-                  <Center>{investment.amount}</Center>
-                </Td>
-                <Td>
-                  <Center>
-                    <Badge colorScheme="green" variant={"solid"}>
-                      {investment.current}
-                    </Badge>
-                  </Center>
-                </Td>
-                <Td>
-                  <Center>{investment.date_time}</Center>
-                </Td>
-                <Td>
-                  <Center>{investment.remarks}</Center>
-                </Td>
-                <Td>
-                  <Center>
-                    <Badge
-                      colorScheme={investment.active ? "green" : "red"}
-                      variant={"solid"}
-                    >
-                      Active
-                    </Badge>
-                  </Center>
-                </Td>
-                <Td>
-                  <Center>
-                    <Button
-                      onClick={() => {
-                        setInvestment(investment);
-                        onOpen(investment);
-                      }}
-                      colorScheme={"blue"}
-                      size={"xs"}
-                    >
-                      <Icon as={FaEdit} />
-                    </Button>
-                  </Center>
-                </Td>
+                {Object.keys(investment).map((col, index) => {
+                  return (
+                    <Td key={index}>
+                      <Center>{investment[col]}</Center>
+                    </Td>
+                  );
+                })}
               </Tr>
             );
           })}
@@ -163,7 +165,7 @@ const Investments = () => {
                       name={s}
                       onChange={handleChange}
                       type="text"
-                      disabled={s === "investment_id" || s === "investor_id"}
+                      disabled={s === "id" || s === "investorId"}
                     />
                   )}
                 </FormControl>

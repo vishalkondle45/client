@@ -17,7 +17,7 @@ let chance = new Chance();
 
 const UserRegister = ({ onClose, showUserRegister, setShowUserRegister }) => {
   const [randomId, setRandomId] = useState(
-    chance.integer({ min: 0, max: 9999 })
+    chance.integer({ min: 100000, max: 999999 })
   );
   const toast = useToast();
   let stop = false;
@@ -139,7 +139,7 @@ const UserRegister = ({ onClose, showUserRegister, setShowUserRegister }) => {
       .catch((error) => console.log(error))
       .finally(() => {
         setRegisterDetails({
-          id: chance.integer({ min: 0, max: 9999 }),
+          id: chance.integer({ min: 100000, max: 999999 }),
           name: "",
           username: "",
           password: "",
@@ -152,7 +152,7 @@ const UserRegister = ({ onClose, showUserRegister, setShowUserRegister }) => {
           pincode: "",
           status: false,
         });
-        setRandomId(chance.integer({ min: 0, max: 9999 }));
+        setRandomId(chance.integer({ min: 100000, max: 999999 }));
         setShowUserRegister(false);
       });
   };
@@ -165,9 +165,9 @@ const UserRegister = ({ onClose, showUserRegister, setShowUserRegister }) => {
           <ModalHeader>Register</ModalHeader>
           <ModalCloseButton
             onClick={() => {
-              setRandomId(chance.integer({ min: 0, max: 9999 }));
+              setRandomId(chance.integer({ min: 100000, max: 999999 }));
               setRegisterDetails({
-                id: chance.integer({ min: 0, max: 9999 }),
+                id: chance.integer({ min: 100000, max: 999999 }),
                 name: "",
                 username: "",
                 password: "",
@@ -252,9 +252,9 @@ const UserRegister = ({ onClose, showUserRegister, setShowUserRegister }) => {
           <ModalFooter>
             <Button
               onClick={() => {
-                setRandomId(chance.integer({ min: 0, max: 9999 }));
+                setRandomId(chance.integer({ min: 100000, max: 999999 }));
                 setRegisterDetails({
-                  id: chance.integer({ min: 0, max: 9999 }),
+                  id: chance.integer({ min: 100000, max: 999999 }),
                   name: "",
                   username: "",
                   password: "",

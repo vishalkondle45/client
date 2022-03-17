@@ -31,6 +31,7 @@ const InputField = ({
           name={name}
           value={value}
           onChange={handleInput}
+          isDisabled={readOnly}
         />
       </InputGroup>
     </div>
